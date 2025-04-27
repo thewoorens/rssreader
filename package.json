@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
+    "axios": "^1.9.0",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
     "vue-router": "^4.5.1"

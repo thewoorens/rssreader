@@ -43,10 +43,16 @@ export default {
       ]
     }
   },
+  methods: {
+    handleSubmit() {
+      this.$router.push({name: 'register'})
+    }
+  },
 }
 </script>
 
 <template>
+  <button @click="handleSubmit">merhaba</button>
   <div class="min-h-screen bg-white">
     <div class="relative bg-indigo-50 overflow-hidden lg:pt-52">
       <div class="max-w-7xl mx-auto">

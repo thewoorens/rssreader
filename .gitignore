@@ -21,3 +21,7 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+src/api/.env
+# port=5000
+# MONGO_URI=mongodb://localhost:27017

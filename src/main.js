@@ -6,6 +6,8 @@ import App from './App.vue'
 import './index.css'
 import {routes} from './routes.js'
 
+import {apiService} from './apiService.js'
+
 const router = createRouter({
     routes: routes,
     history: createWebHistory()
@@ -13,5 +15,5 @@ const router = createRouter({
 
 const app = createApp(App)
 app.use(router)
-
+app.use(apiService)
 app.mount('#app')

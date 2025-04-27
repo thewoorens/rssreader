@@ -4,10 +4,11 @@ export default {
   data() {
     return {
       form: {
-        email: '',
+        email: this.$route.query.email || '',
         password: '',
         remember: true
       },
+      showRegisterSuccess: this.$route.query.showRegisterSuccess || false,
       isLoading: false,
       errorMessage: ''
     }
@@ -63,7 +64,9 @@ export default {
               </div>
             </div>
           </div>
-
+          <div class="p-4 mb-4 text-sm text-green-800 bg-green-50 rounded-lg" v-if="showRegisterSuccess && form.email">
+            <span>Kayıt işleminiz başarılı, şimdi lütfen giriş yapın.</span>
+          </div>
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">
               Email adresin

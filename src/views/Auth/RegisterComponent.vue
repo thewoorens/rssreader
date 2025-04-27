@@ -8,26 +8,67 @@ export default {
         email: '',
         password: '',
         confirmPassword: '',
-        remember: true
       },
       isLoading: false,
       errorMessage: ''
     }
   },
   methods: {
-    handleSubmit() {
-      if (!this.form.email || !this.form.password) {
-        this.errorMessage = 'Lütfen email ve şifrenizi giriniz'
-        return
+    async handleSubmit() {
+      const validationError = this.validateForm();
+      if (validationError) {
+        this.errorMessage = validationError;
+        return;
       }
 
-      this.isLoading = true
-      this.errorMessage = ''
+      this.isLoading = true;
+      this.errorMessage = '';
 
-      setTimeout(() => {
-        this.isLoading = false
-        console.log('Login attempt:', this.form)
-      }, 2000)
+      try {
+        const response = await this.$apiService.post('users/register', this.form);
+        this.isLoading = false;
+        switch (response) {
+          case 200:
+            this.$router.push({name: 'login', query: {email: this.form.email, showRegisterSuccess: true}});
+            break;
+          case 409:
+            this.errorMessage = 'Bu email adresine sahip bir hesap zaten var!';
+            break;
+          case 408:
+            this.errorMessage = 'Daha güçlü bir parola seçmelisin! En az 6 karakter uzunluğunda olmalı';
+            break;
+          case 400:
+            this.errorMessage = 'Lütfen tüm alanları doğru bir şekilde doldurduğunuzdan emin olun';
+            break;
+          default:
+            this.errorMessage = 'Kayıt işlemi başarısız oldu';
+            this.resetForm();
+        }
+      } catch (error) {
+        this.isLoading = false;
+        this.errorMessage = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+      }
+    },
+
+    validateForm() {
+      const {name, email, password, confirmPassword} = this.form;
+
+      if (!email || !password) return 'Lütfen email ve şifrenizi giriniz';
+      if (password !== confirmPassword) return 'Şifreler eşleşmiyor';
+      if (password.length < 6) return 'Şifre en az 6 karakter uzunluğunda olmalıdır';
+      if (name.length < 3) return 'Adınız en az 3 karakter uzunluğunda olmalıdır';
+      if (!email.includes('@') || !email.includes('.') || email.length < 5) return 'Lütfen geçerli bir email adresi giriniz';
+
+      const commonEmailProviders = /@(gmail|yahoo|hotmail|outlook|icloud|yandex|protonmail|proton|tutanota|zoho|mail\.ru|yahoo\.(co\.uk|com\.tr|com)|hotmail\.(co\.uk|com\.tr|com))$/i;
+      if (commonEmailProviders.test(email)) {
+        return 'Lütfen geçerli bir email adresi giriniz';
+      }
+
+      return null;
+    },
+
+    resetForm() {
+      this.form = {name: '', email: '', password: '', confirmPassword: ''};
     }
   },
 }
@@ -127,8 +168,10 @@ export default {
       <div>
         <p class="mt-2 text-center text-sm text-gray-600">
           <router-link to="/" class="font-medium text-indigo-600 hover:text-indigo-500 flex items-center">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="mr-2 bi bi-arrow-left" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                 class="mr-2 bi bi-arrow-left" viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                    d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
             </svg>
             Ana Sayfaya Dön
           </router-link>
