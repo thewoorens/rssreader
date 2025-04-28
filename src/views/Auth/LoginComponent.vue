@@ -14,19 +14,43 @@ export default {
     }
   },
   methods: {
-    handleSubmit() {
+    async handleSubmit() {
+      this.showRegisterSuccess = false;
+      this.errorMessage = '';
+      this.isLoading = true;
+
       if (!this.form.email || !this.form.password) {
-        this.errorMessage = 'Lütfen email ve şifrenizi giriniz'
-        return
+        this.errorMessage = 'Lütfen email ve şifrenizi giriniz';
+        this.isLoading = false;
+        return;
       }
 
-      this.isLoading = true
-      this.errorMessage = ''
+      try {
+        const requestData = {...this.form};
+        if (!requestData.remember) {
+          delete requestData.remember;
+        }
+        const response = await this.$apiService.post('users/login', requestData);
 
-      setTimeout(() => {
-        this.isLoading = false
-        console.log('Login attempt:', this.form)
-      }, 2000)
+        switch (response) {
+          case 200:
+            this.$router.push({name: 'home'});
+            break;
+          case 400:
+            this.errorMessage = 'Lütfen tüm alanları doğru bir şekilde doldurduğunuzdan emin olun';
+            break;
+          case 401:
+            this.errorMessage = 'Email veya şifre hatalı';
+            break;
+          default:
+            this.errorMessage = 'Giriş işlemi başarısız oldu';
+            this.resetForm();
+        }
+      } catch (error) {
+        this.errorMessage = 'Bir hata oluştu. Lütfen tekrar deneyin.';
+      } finally {
+        this.isLoading = false;
+      }
     }
   },
 }

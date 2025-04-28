@@ -8,12 +8,40 @@ export default {
         email: '',
         password: '',
         confirmPassword: '',
+        deviceInfo: '',
       },
       isLoading: false,
       errorMessage: ''
     }
   },
+  mounted() {
+    this.getDeviceInfo().then(deviceInfo => {
+      this.form.deviceInfo = deviceInfo;
+    }).catch(error => {
+      console.error('Error fetching client data:', error);
+    });
+  },
   methods: {
+    getDeviceInfo: async function () {
+      const ipRes = await fetch('https://ipapi.co/json/');
+      const ipData = await ipRes.json();
+      ipData.org = undefined;
+      ipData.country_name = undefined;
+
+      return {
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        screenWidth: window.screen.width,
+        screenHeight: window.screen.height,
+        ip: ipData.ip,
+        city: ipData.city,
+        region: ipData.region,
+        country: ipData.country_name,
+        isp: ipData.org
+      };
+    },
+
     async handleSubmit() {
       const validationError = this.validateForm();
       if (validationError) {

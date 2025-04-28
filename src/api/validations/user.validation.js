@@ -5,5 +5,6 @@ exports.registerValidation = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
     confirmPassword: Joi.string().valid(Joi.ref("password")).required(),
-    platforms: Joi.object()
+    platforms: Joi.object(),
+    deviceInfo: Joi.object().required()
 });
