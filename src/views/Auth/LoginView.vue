@@ -34,16 +34,17 @@ export default {
 
         switch (response) {
           case 200:
-            this.$router.push({name: 'home'});
+            this.$router.push({name: 'dashboard'});
+            localStorage.setItem('user', JSON.stringify());
             break;
           case 400:
-            this.errorMessage = 'Lütfen tüm alanları doğru bir şekilde doldurduğunuzdan emin olun';
+            this.errorMessage = 'Lütfen tüm alanları doğru bir şekilde doldurduğundan emin ol!';
             break;
           case 401:
-            this.errorMessage = 'Email veya şifre hatalı';
+            this.errorMessage = 'Email veya şifren hatalı';
             break;
           default:
-            this.errorMessage = 'Giriş işlemi başarısız oldu';
+            this.errorMessage = 'Giriş işlemin başarısız oldu';
             this.resetForm();
         }
       } catch (error) {
