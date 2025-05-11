@@ -21,7 +21,7 @@ export const apiService = {
         try {
             const response = await apiClient.post(url, data, {headers});
             console.log("POST API RESPONSE => ", response);
-            return response.status;
+            return response;
         } catch (error) {
             console.error("POST API ERROR => ", error);
             console.error("POST API ERROR STATUS CODE => ", error?.response?.status);

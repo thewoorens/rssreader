@@ -31,11 +31,10 @@ export default {
           delete requestData.remember;
         }
         const response = await this.$apiService.post('users/login', requestData);
-
-        switch (response) {
+        switch (response.status) {
           case 200:
+            localStorage.setItem('user', JSON.stringify(response.data.user));
             this.$router.push({name: 'dashboard'});
-            localStorage.setItem('user', JSON.stringify());
             break;
           case 400:
             this.errorMessage = 'Lütfen tüm alanları doğru bir şekilde doldurduğundan emin ol!';

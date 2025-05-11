@@ -61,7 +61,14 @@ exports.loginUser = async (req, res) => {
             return res.status(400).json({message: "Email and password are required."});
         }
 
-        const user = await User.findOne({email});
+        const user = await User.findOne({email}) || {
+            password: undefined,
+            platforms: undefined,
+            email: undefined,
+            name: undefined,
+            _id: undefined
+        }
+
         if (!user) {
             return res.status(401).json({message: "Invalid credentials."});
         }
@@ -77,6 +84,7 @@ exports.loginUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 platforms: user.platforms,
+                userId: user._id,
             }
         });
 
